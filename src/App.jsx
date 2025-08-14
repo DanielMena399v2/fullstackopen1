@@ -1,140 +1,81 @@
-import React from "react";
+import React, { useState } from "react";
 
-// const Hello = (props) => {
-//     console.log(props)
-//     return (
-//       <div>
-//         <p>
-//           Hello {props.name}, you are {props.age} years old
-//         </p>
-//       </div>
-//     )
-//   }
-
-//   const App = () => {
-//     const name = 'Peter'
-//     const age = 10
-
-//     return (
-//       <div>
-//         <h1>Greetings</h1>
-//         <Hello name='Maya' age={26 + 10} />
-//         <Hello name={name} age={age} />
-//       </div>
-//     )
-//   }
-
-const Header = (props) => {
-  console.log("header:", props);
+const StatisticLine = ({ stats }) => {
   return (
     <div>
-      <h1>{props.name}</h1>
+    <table>
+      <tbody>
+        {stats.map((stat) => (
+            <tr key={stat.text}>
+                <td>{stat.text}</td>
+                <td>{stat.text === "positive" ? `${stat.value}%` : stat.value}</td>
+            </tr>
+        ))}
+      </tbody>
+      </table>
     </div>
   );
 };
 
-const Part = (props) => {
-  console.log("part: ", props);
-  return (
-    <div>
-      <p>
-        {props.part} {props.excercises}
-      </p>
-    </div>
-  );
-};
+const Statistics = (props) => {
+  if (props.total === 0) {
+    console.log("here");
+    return <div>No feedback has been left for statistics to show.</div>;
+  }
 
-const Content = () => {
-  return (
-    <div>
-      <Part part="Fundamentals of React" excercises="10" />
-      <Part part="Using props to pass data" excercises="7" />
-      <Part part="State of a component" excercises="14" />
-    </div>
-  );
-};
+  const data = [
+    { text: 'good', value: props.good },
+    { text: 'neutral', value: props.neutral },
+    { text: 'bad', value: props.bad },
+    { text: 'total', value: props.total },
+    { text: 'average', value: props.avg },
+    { text: 'positive', value: props.posAvg }
+  ];
 
-const Total = (props) => {
-  console.log("total: ", props);
   return (
     <div>
-      <p>Number of excercises {props.total}</p>
-    </div>
-  );
-};
-
-const Course = (props) => {
-  console.log("course: ", props);
-  return (
-    <div>
-      <h1>{props.name}</h1>
-      {props.parts.map((value) => (
-        <p key={value.name}>
-          {value.name} {value.exercises}
-        </p>
-      ))}
-      <p>Number of excercises {props.total}</p>
+      <h1>Statistics</h1>
+      <StatisticLine stats={data}/>
     </div>
   );
 };
 
 const App = () => {
-  //   const course = "Half Stack application development";
-  //   const parts = [
-  //     {
-  //       name: "Fundamentals of React",
-  //       exercises: 10,
-  //     },
-  //     {
-  //       name: "Using props to pass data",
-  //       exercises: 7,
-  //     },
-  //     {
-  //       name: "State of a component",
-  //       exercises: 14,
-  //     },
-  //   ];
-  //   const part1 = {
-  //     name: "Fundamentals of React",
-  //     exercises: 10,
-  //   };
-  //   const part2 = {
-  //     name: "Using props to pass data",
-  //     exercises: 7,
-  //   };
-  //   const part3 = {
-  //     name: "State of a component",
-  //     exercises: 14,
-  //   };
-  const course = {
-    name: "Half Stack application development",
-    parts: [
-      {
-        name: "Fundamentals of React",
-        exercises: 10,
-      },
-      {
-        name: "Using props to pass data",
-        exercises: 7,
-      },
-      {
-        name: "State of a component",
-        exercises: 14,
-      },
-    ],
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+  const total = good + neutral + bad;
+  const avg = (good - bad) / total;
+  const posAvg = good / total;
+
+  const handleGoodClick = () => {
+    setGood(good + 1);
   };
+
+  const handleNeutralClick = () => {
+    setNeutral(neutral + 1);
+  };
+
+  const handleBadClick = () => {
+    setBad(bad + 1);
+  };
+
   return (
     <div>
-      {/* <Header name={course} />
-      <Part part={parts[0].name} excercises={parts[0].exercises} />
-      <Part part={parts[1].name} excercises={parts[1].exercises} />
-      <Part part={parts[2].name} excercises={parts[2].exercises} />
-      <Total total={10 + 7 + 14} /> */}
-      <Course name={course.name} parts={course.parts} total={10+7+14}/>
+      <h1>Give Feedback</h1>
+      <button onClick={handleGoodClick}>Good</button>
+      <button onClick={handleNeutralClick}>Neutral</button>
+      <button onClick={handleBadClick}>Bad</button>
+      <Statistics
+        good={good}
+        neutral={neutral}
+        bad={bad}
+        total={total}
+        avg={avg}
+        posAvg={posAvg}
+      />
     </div>
   );
 };
 
 export default App;
-
-
